@@ -19,6 +19,16 @@ public class DBFile {
 
     private String fileType;
 
+    private String filedownloadUri;
+
+    public String getFiledownloadUri(){
+        return this.filedownloadUri;
+    }
+
+    public void setFiledownloadUri(String filedownloadUri){
+        this.filedownloadUri = filedownloadUri;
+    }
+
     public String getId() {
         return id;
     }

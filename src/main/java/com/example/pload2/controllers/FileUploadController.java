@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.example.pload2.payload.Response;
@@ -28,12 +27,7 @@ public class FileUploadController {
     public Response uploadFile(@RequestParam("file") MultipartFile file) {
         DBFile dbFile = fileStorageService.storeFile(file);
 
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-            .path("/downloadFile/")
-            .path(dbFile.getFileName())
-            .toUriString();
-
-        return new Response(dbFile.getFileName(), fileDownloadUri,
+        return new Response(dbFile.getFileName(), dbFile.getFiledownloadUri(),
             file.getContentType(), file.getSize());
     }
 
@@ -56,5 +50,10 @@ public class FileUploadController {
     public FileSystemResource videoSource(@PathVariable("id") String id) {
         DBFile dbFile = fileStorageService.getFile(id);
         return new FileSystemResource(new File("./uploads/"+dbFile.getFileName()));
+    }
+    
+    @GetMapping("/checkFile/{id}")
+    public DBFile getF(@PathVariable("id") String id){
+          return fileStorageService.getFile(id);
     }
 }

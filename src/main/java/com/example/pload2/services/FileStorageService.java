@@ -16,6 +16,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.pload2.exceptions.FileStorageException;
 import com.example.pload2.exceptions.FileNotFoundException;
@@ -57,7 +58,13 @@ public class FileStorageService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             //create object dbfile
 
+            String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
+            .path("/downloadFile/")
+            .path(fileName)
+            .toUriString();
+
             DBFile dbFile = new DBFile(fileName,file.getContentType());
+            dbFile.setFiledownloadUri(fileDownloadUri);
             return dbFileRepository.save(dbFile);
 
         } catch (IOException ex) {
@@ -94,6 +101,12 @@ public class FileStorageService {
     public DBFile getFile(String fileId) {
         return dbFileRepository.findById(fileId)
                 .orElseThrow(() -> new FileNotFoundException("File not found with id " + fileId));
+    }
+
+    //file by FileName
+
+    public DBFile getFileByFileName(String fileName){
+        return dbFileRepository.findDBFileByFileName(fileName);
     }
 
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import com.example.pload2.model.DBFile;
 
 import com.example.pload2.services.FileStorageService;
 
@@ -31,7 +32,8 @@ public class FileDownloadController {
     @GetMapping("/downloadFile/{fileName:.+}")
     public ResponseEntity < Resource > downloadFile(@PathVariable String fileName, HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        DBFile dbFile = fileStorageService.getFileByFileName(fileName);
+        Resource resource = fileStorageService.loadFileAsResource(dbFile.getId());
 
         // Try to determine file's content type
         String contentType = null;
